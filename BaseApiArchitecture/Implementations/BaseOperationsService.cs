@@ -34,6 +34,7 @@ namespace BaseApiArchitecture.Implementations
 		{
 			return await FunctionProcessStrategy.Process(async () => await Repository.GetWithFilter(Filter));
 		}
+
 		/*
 		public virtual async Task<IEnumerable<Result<T>>> Save(bool Commit = true, params T[] Entities)
 		{
@@ -61,6 +62,7 @@ namespace BaseApiArchitecture.Implementations
 
 			return new List<Result<T>> { new Result<T>(false, Result.Messages?.ToArray()) };
 		}
+		*/
 		
 		public virtual async Task<Result<IEnumerable<T>>> Delete(bool Commit = true, params int[] Ids)
 		{
@@ -72,7 +74,6 @@ namespace BaseApiArchitecture.Implementations
 			return await (TransactionControl ?
 							DatabaseProcessStrategy.Process(async () => await Function()) :
 							FunctionProcessStrategy.Process(async () => await Function()));
-		}
-		*/
+		}		
 	}
 }
