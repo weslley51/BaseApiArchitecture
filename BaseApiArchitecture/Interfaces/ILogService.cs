@@ -6,8 +6,8 @@ namespace BaseApiArchitecture.Interfaces
 {
 	public interface ILogService
     {
-		Task<string> SaveExceptions(Exception Exception, int UserId);
-		Task SaveChanges(BaseEntity OldObject, BaseEntity NewObject, int UserId);
+		Task<string> SaveExceptions(Exception Exception);
+		Task SaveChanges(BaseEntity OldObject, BaseEntity NewObject);
 	}
 }
 

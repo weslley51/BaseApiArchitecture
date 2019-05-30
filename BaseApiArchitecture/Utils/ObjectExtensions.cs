@@ -8,6 +8,7 @@ namespace BaseApiArchitecture.Utils
 		{
 			return JsonConvert.SerializeObject(Object, new JsonSerializerSettings
 			{
+				NullValueHandling = NullValueHandling.Ignore,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 				PreserveReferencesHandling = PreserveReferencesHandling.None
 			});

@@ -35,7 +35,7 @@ namespace BaseApiArchitecture.Implementations
 			}
 			catch (Exception ex)
 			{
-				var Message = await LogService.SaveExceptions(ex, UserId);
+				var Message = await LogService.SaveExceptions(ex);
 				return new Result<T>(false, new string[] { Message });
 			}
 			finally

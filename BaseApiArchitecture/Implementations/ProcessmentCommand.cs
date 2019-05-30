@@ -7,42 +7,48 @@ using System;
 
 namespace BaseApiArchitecture.Implementations
 {
-	public class BaseOperationsService<T> : IBaseOperations<T> where T : BaseEntity
+	public class ProcessmentCommand : IProcessmentCommand
 	{
-		protected IRepository<T> Repository { get; private set; }
 		protected IProcessStrategy FunctionProcessStrategy { get; private set; }
 		protected IProcessStrategy DatabaseProcessStrategy { get; private set; }
 
-		public BaseOperationsService(IRepository<T> Repository, IProcessStrategy ProcessStrategy, IUnitOfWork UnitOfWork, ILogService LogService)
+		public ProcessmentCommand(IProcessStrategy ProcessStrategy, IUnitOfWork UnitOfWork, ILogService LogService)
 		{
-			this.Repository = Repository;
 			FunctionProcessStrategy = ProcessStrategy;
 			DatabaseProcessStrategy = new DatabaseProcessStrategy(UnitOfWork, LogService);
 		}
-
-		public virtual async Task<Result<T>> GetById(int Id)
+		/*
+		public virtual async Task<Result<T>> GetById(T Entity)
 		{
-			return await FunctionProcessStrategy.Process(async () => await Repository.GetById(Id));
+			return await FunctionProcessStrategy.Process(async () => await Repository.GetById(Entity));
 		}
 
 		public virtual async Task<Result<IEnumerable<T>>> GetAll(int Page = 1, int Quantity = 10)
 		{
-			return await FunctionProcessStrategy.Process(async () => await Repository.GetWithFilter(x => x.Id != 0));
+			return await FunctionProcessStrategy.Process(async () => await Repository.GetWithFilter(x => x != null));
 		}
 
 		public virtual async Task<Result<IEnumerable<T>>> GetWithFilter(IFilter<T> Filter)
 		{
 			return await FunctionProcessStrategy.Process(async () => await Repository.GetWithFilter(Filter));
 		}
-
-		/*
+				
+		public virtual async Task<Result<T>> Delete(bool Commit = true, params T[] Entities)
+		{
+			return await Execute<T>(async () => 
+			{
+				await Repository.Delete(Entities);
+				return null;
+			}, Commit);
+		}
+		
 		public virtual async Task<IEnumerable<Result<T>>> Save(bool Commit = true, params T[] Entities)
 		{
 			Func<Task<IEnumerable<Result<T>>>> Function = async () =>
 			{
 				var Results = new List<Result<T>>();
 
-				if (ValidatorCommand == null)
+				if (Entities. == null)
 					throw new ValidationException(Entities, "Não existe uma classe de validação definida para o objeto !");
 
 				foreach (var Entity in Entities)
@@ -63,13 +69,7 @@ namespace BaseApiArchitecture.Implementations
 			return new List<Result<T>> { new Result<T>(false, Result.Messages?.ToArray()) };
 		}
 		*/
-		
-		public virtual async Task<Result<IEnumerable<T>>> Delete(bool Commit = true, params int[] Ids)
-		{
-			return await Execute(async () => await Repository.Delete(Ids), Commit);
-		}
-		
-		private async Task<Result<U>> Execute<U>(Func<Task<U>> Function, bool TransactionControl = false)
+		public async Task<Result<U>> Execute<U>(Func<Task<U>> Function, bool TransactionControl = false)
 		{
 			return await (TransactionControl ?
 							DatabaseProcessStrategy.Process(async () => await Function()) :
